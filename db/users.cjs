@@ -1,6 +1,6 @@
 const client= require('./client.cjs')
 const bcrypt= require('bcrypt');
-
+const jwt= require('jsonwebtoken');
 
 const createUser= async(username, password)=> {
   try {

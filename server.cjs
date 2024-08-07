@@ -19,12 +19,25 @@ app.post('/api/v1/users', async(req, res, next)=> {
     next(err);
   }
 });
+// uncomment this when you get the jwt working
+// app.get('/api/v1/users', async(req, res, next)=> {
+//   try {
+//     const token= req.headers.authorization;
+//     const user= await getUserByToken(token);
+//     res.send({user})
+//   }catch(err) {
+//     console.log(err)
+//   }
+// })
 
-app.get('/api/v1/users', async(req, res, next)=> {
+app.get('/api/v1/users/:user', async(req, res, next)=> {
   try {
-    const token= req.headers.authorization;
-    const user= await getUserByToken(token);
-    res.send({userId})
+    const { username, password } = req.query;
+    if(!username || !password) {
+      return res.send(400).send({ error: 'Username and password required'});
+    }
+    const user= await getUser(username, password);
+    res.send({user})
   }catch(err) {
     console.log(err)
   }
