@@ -1,5 +1,5 @@
 const {getUser, getUserByToken}= require('./db/users.cjs');
-
+require('dotenv').config();
 
 const client= require('./db/client.cjs');
 client.connect();
@@ -19,16 +19,6 @@ app.post('/api/v1/users', async(req, res, next)=> {
     next(err);
   }
 });
-// uncomment this when you get the jwt working
-// app.get('/api/v1/users', async(req, res, next)=> {
-//   try {
-//     const token= req.headers.authorization;
-//     const user= await getUserByToken(token);
-//     res.send({user})
-//   }catch(err) {
-//     console.log(err)
-//   }
-// })
 
 app.get('/api/v1/users/:user', async(req, res, next)=> {
   try {
@@ -40,6 +30,26 @@ app.get('/api/v1/users/:user', async(req, res, next)=> {
     res.send({user})
   }catch(err) {
     console.log(err)
+  }
+})
+
+app.put('/api/v1/users/:id', async(req, res, next)=> {
+  try {
+    const userId= req.params.id;
+    console.log(req.params.id);
+    const {username, password}= req.body;
+    
+    console.log(req.body)
+    
+    const userIndex= users.findIndex((user)=> user.id=== userId);
+    if (userIndex !== -1) {
+      users[userIndex]= {...users[userIndex], username, password};
+      res.json({success: true, user: users[userIndex]});
+    } else {
+      res.status(404).json({success:false, message: 'User not found'});
+    }
+  } catch(err) {
+    console.log()
   }
 })
 

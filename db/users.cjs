@@ -1,6 +1,7 @@
 const client= require('./client.cjs')
 const bcrypt= require('bcrypt');
 const jwt= require('jsonwebtoken');
+require('dotenv').config();
 
 const createUser= async(username, password)=> {
   try {
@@ -24,8 +25,9 @@ const getUser= async(username, password)=> {
    
   const isPasswordMatch= await bcrypt.compare(password, user.password);
 
-  if(user) {
-
+  if(user && isPasswordMatch) {
+    const assignedToken= await jwt.sign({userId: user.id}, process.env.JWT_SECRET);
+    return assignedToken;
   } else{
     const error= new Error('Bad Credentials!');
     error.status= 401;
